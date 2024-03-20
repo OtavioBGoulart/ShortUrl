@@ -1,0 +1,14 @@
+# Ignorar arquivos de imagem Docker
+*.dockerfile
+
+# Ignorar arquivos de composição do Docker
+docker-compose.yml
+
+# Ignorar arquivos de contexto do Docker (por exemplo, Dockerfile e outros arquivos necessários no mesmo diretório)
+Dockerfile
+
+# Ignorar o arquivo .env
+.env
+
+# Ignorar o diretório node_modules
+node_modules
