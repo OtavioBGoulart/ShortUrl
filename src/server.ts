@@ -1,6 +1,6 @@
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
-import { createLinkSchema } from "./models";
-import { getLinks, result } from "./db/querys";
+import { createLinkSchema, getLinkSchema } from "./models";
+import { getCode, getLinks, result } from "./db/querys";
 import { z } from "zod"
 import postgres from "postgres";
 
@@ -8,6 +8,32 @@ import postgres from "postgres";
 const app = fastify();
 
 app.get("/:code", async(req: FastifyRequest, res: FastifyReply) => {
+
+    try {
+        const { code } = getLinkSchema.parse(req.params);
+
+        const result = await getCode(code);
+        if (result.length === 0) return res.status(400).send({ message: "Not Found!" })
+        console.log(result)
+
+        //301 - permanente
+        //302 - temporário
+
+        return res.redirect(301, result[0].original_url)
+
+
+    } catch(error) {
+
+        if (error instanceof postgres.PostgresError) {
+            if (error.code === "23505") {
+                res.status(400).send({ message: "Duplicated code!"})
+            }
+        }
+
+        console.log(error);
+
+        return res.status(500).send({ message: "Internal Server Error"})
+    }
 })
 
 app.get("/api/links", async(req: FastifyRequest, res: FastifyReply) => {

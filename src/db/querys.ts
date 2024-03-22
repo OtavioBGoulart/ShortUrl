@@ -27,11 +27,11 @@ async function getLinks() {
 async function getCode(code: string) {
     const result = await sql/*sql*/`
         
-    SELECT id, code FROM short_links 
-    WHERE code = (${code})
+    SELECT id, original_url FROM short_links 
+    WHERE short_links.code = (${code})
 
 `
-    return result[0]
+    return result
 }
 
 export { result, getLinks, getCode };
