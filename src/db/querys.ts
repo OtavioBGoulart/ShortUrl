@@ -24,4 +24,14 @@ async function getLinks() {
     return result
 }
 
-export { result, getLinks };
+async function getCode(code: string) {
+    const result = await sql/*sql*/`
+        
+    SELECT id, code FROM short_links 
+    WHERE code = (${code})
+
+`
+    return result[0]
+}
+
+export { result, getLinks, getCode };
