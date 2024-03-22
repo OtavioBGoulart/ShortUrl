@@ -7,7 +7,10 @@ import postgres from "postgres";
 
 const app = fastify();
 
-app.get("/links", async(req: FastifyRequest, res: FastifyReply) => {
+app.get("/:code", async(req: FastifyRequest, res: FastifyReply) => {
+})
+
+app.get("/api/links", async(req: FastifyRequest, res: FastifyReply) => {
 
     try {
         const links = await getLinks()
@@ -26,7 +29,7 @@ app.get("/links", async(req: FastifyRequest, res: FastifyReply) => {
     }
 })
 
-app.post("/links", async (req: FastifyRequest, res: FastifyReply) => {
+app.post("/api/links", async (req: FastifyRequest, res: FastifyReply) => {
     console.log(req.body)
 
     try {
