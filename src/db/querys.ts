@@ -12,4 +12,16 @@ async function result(code: string, url: string) {
     return result[0];
 }
 
-export { result };
+async function getLinks() {
+
+    const result = await sql/*sql*/`
+        
+        SELECT * FROM short_links 
+        ORDER BY created_at DESC
+    
+    `
+
+    return result
+}
+
+export { result, getLinks };
