@@ -90,10 +90,15 @@ app.get("/api/metrics", async(req: FastifyRequest, res: FastifyReply) => {
     const redis = await getRedis();
     const result = await redis.zRangeByScoreWithScores("metricsr", 0, 50);
 
-    console.log(typeof(result))
-    console.log(result ? result : "deu ruim")
+    const metrics = result
+    .sort((a, b) => b.score - a.score)
+    .map(item => {
+        return { shortLinkId: Number(item.value),
+        clicks: item.score
+        }
+    })
 
-    return result;
+    return metrics;
 })
 
 app.listen(({
