@@ -3,6 +3,7 @@ import { createLinkSchema, getLinkSchema } from "./models";
 import { getCode, getLinks, result } from "./db/querys";
 import { z } from "zod"
 import postgres from "postgres";
+import { getRedis } from "./libs/redis";
 
 
 const app = fastify();
@@ -15,6 +16,10 @@ app.get("/:code", async(req: FastifyRequest, res: FastifyReply) => {
         const result = await getCode(code);
         if (result.length === 0) return res.status(400).send({ message: "Not Found!" })
         console.log(result)
+
+        
+        const redis = await getRedis();
+        await redis.zIncrBy("metricsr", 1, String(result[0].id))
 
         //301 - permanente
         //302 - temporário
@@ -78,6 +83,17 @@ app.post("/api/links", async (req: FastifyRequest, res: FastifyReply) => {
     }
 
     
+})
+
+app.get("/api/metrics", async(req: FastifyRequest, res: FastifyReply) => {
+    //console.log("oi")
+    const redis = await getRedis();
+    const result = await redis.zRangeByScoreWithScores("metricsr", 0, 50);
+
+    console.log(typeof(result))
+    console.log(result ? result : "deu ruim")
+
+    return result;
 })
 
 app.listen(({
